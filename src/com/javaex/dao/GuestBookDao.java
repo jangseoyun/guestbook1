@@ -104,6 +104,41 @@ public class GuestBookDao {
 		return list;
 	}
 
+	// ------------no,password select-----------------------------
+	public GuestbookVo guestNoPassword() {
+
+		this.getConnection();
+
+		GuestbookVo guestbookVo = null;
+
+		try {
+
+			// 3. SQL문 준비 / 바인딩 / 실행
+			String query = ""; // 쿼리문 문자열만들기, ? 주의
+			query += " select  no, ";
+			query += "         password ";
+			query += " from guestbook ";
+
+			pstmt = conn.prepareStatement(query); // 쿼리로 만들기
+
+			rs = pstmt.executeQuery(); // 쿼리문 실행
+
+			// 4.결과처리
+
+			rs.next();
+			int no = rs.getInt("no");
+			String password = rs.getString("password");
+
+			guestbookVo = new GuestbookVo(no, password);
+
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		}
+
+		close();
+		return guestbookVo;
+	}
+
 	// ------------insert-----------------------------
 
 	public int guestbookInsert(GuestbookVo guestbookVo) {
@@ -116,30 +151,30 @@ public class GuestBookDao {
 			String query = "";
 			query += " insert into guestbook ";
 			query += " values(seq_guestbook_no.nextval, ?,?,?,sysdate) ";
-			
+
 			pstmt = conn.prepareStatement(query);
-			
-			//바인딩
+
+			// 바인딩
 			pstmt.setString(1, guestbookVo.getName());
 			pstmt.setString(2, guestbookVo.getPassword());
 			pstmt.setString(3, guestbookVo.getContent());
-			
-			//실행
+
+			// 실행
 			count = pstmt.executeUpdate();
-			
+
 			// 4.결과처리
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
-		} 
-		
+		}
+
 		this.close();
 		return count;
 	}
-	
+
 	// ------------delete-----------------------------
-	
-	public int guestbookDelete(int index) {
-		
+
+	public int guestbookDelete(int index, String password) {
+
 		int count = 0;
 		this.getConnection();
 
@@ -148,23 +183,21 @@ public class GuestBookDao {
 			String query = "";
 			query += " delete from guestbook ";
 			query += " where no = ? ";
-			
+			query += " and password = ? ";
+
 			pstmt = conn.prepareStatement(query);
-			
-			//바인딩
+
+			// 바인딩 //index가 파라미터로 받은 no
 			pstmt.setInt(1, index);
-			
+			pstmt.setString(2, password);
+
 			// 4.결과처리
-			if(count==1) {
-				pstmt.executeUpdate();
-			}else{
-				System.out.println("비밀번호가 일치하지 않습니다");
-			}
-			
+			count = pstmt.executeUpdate();
+
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
-		} 
-		
+		}
+
 		this.close();
 		return count;
 	}
