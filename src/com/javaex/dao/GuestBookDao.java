@@ -193,6 +193,10 @@ public class GuestBookDao {
 
 			// 4.결과처리
 			count = pstmt.executeUpdate();
+			
+			if(count != 0) {
+				
+			}
 
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
