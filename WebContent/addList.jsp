@@ -12,6 +12,9 @@
 	//guestbookList 가져오기
 	List<GuestbookVo> guestbookList = guestbookDao.getList();
 
+	//post사용시 한글이 깨지지 않도록 선언
+	request.setCharacterEncoding("UTF-8");
+	
 	//테스트
 	//System.out.println(guestbookList.toString());
 %>
@@ -27,7 +30,7 @@
 
 <body>
 	<!-- 등록 폼 영역 -->
-	<form action = "./add.jsp" method="get">
+	<form action = "./add.jsp" method="post">
 		<table border="1" width="500px">
 			<tr>
 				<td>이름</td>
